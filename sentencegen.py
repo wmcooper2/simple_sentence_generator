@@ -8,7 +8,8 @@ from typing import List
 
 # 3rd party
 from tabulate import tabulate
-# import nltk
+from nltk.tokenize import word_tokenize
+from nltk.tag import pos_tag
 
 # custom
 from constants import (CHOICE_MESSAGE,
@@ -29,15 +30,6 @@ def load_files(file_: Text) -> List[Text]:
         return []
 
 
-
-# tokenize/parse the sentence
-# determine the parts of speech
-    # make list of the needed parts of speech
-# load vocabulary
-    # make list of the parts of speech of the vocabulary
-# make random sentences by only using the given sentence pattern and vocab
-
-
 def main(vocab: List[Tuple[Text, Text]], sents: List[Text]) -> None:
     # User is presented with a list of sentence choices.
     answer = input(WELCOME_MESSAGE)
@@ -48,8 +40,21 @@ def main(vocab: List[Tuple[Text, Text]], sents: List[Text]) -> None:
     while choice not in range(1, len(sentences)):
         try:
             choice = int(input(CHOICE_MESSAGE))
+           # get sentence of user choice
+
         except ValueError:
             print(NOT_A_NUMBER_ERROR)
+   
+   # tokenize/parse the sentence
+   # determine the parts of speech
+    # make list of the needed parts of speech
+
+
+
+# load vocabulary
+    # make list of the parts of speech of the vocabulary
+# make random sentences by only using the given sentence pattern and vocab
+
     # When User makes a choice, program asks for an amount.
         # if the user makes a mistake, then the options are presented again
     # Program makes a text file with the amount of sentences requested.
