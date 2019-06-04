@@ -7,10 +7,11 @@ from typing import List
 # 3rd party
 # import nltk
 
-sentence_file = "grade2sentences.txt"
-vocabulary_file = "grade2vocab.txt"
-sentences = []
-vocabulary = []
+# custom
+from constants import (WELCOME_MESSAGE,
+                       SENTENCE_FILE,
+                       VOCABULARY_FILE,
+                       )
 
 
 def load_files(file_: Text) -> List[Text]:
@@ -33,13 +34,18 @@ def load_files(file_: Text) -> List[Text]:
 # make random sentences by only using the given sentence pattern and vocab
 
 
-def main():
+def main(vocab: List[Text], sents: List[Text]) -> None:
     # User is presented with a list of sentence choices.
+    answer = input(WELCOME_MESSAGE)
+
+    # load sentences and present
+    pprint(sents)
     # User chooses one with a number
     # When User makes a choice, program asks for an amount.
         # if the user makes a mistake, then the options are presented again
     # Program makes a text file with the amount of sentences requested.
-    pass
 
 if __name__ == "__main__":
-    main()
+    sentences = load_files(SENTENCE_FILE)
+    vocabulary = load_files(VOCABULARY_FILE)
+    main(vocabulary, sentences)
