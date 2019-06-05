@@ -34,7 +34,15 @@ class TestNltkMethods():
                           ('coconut', 'NN'), ('.', '.')]
 
 class TestMainFunctions():
+    sentence = "I am a coconut."
+    tokens = word_tokenize(sentence)
 
     def test_sent_pos_tags(self):
-        # get pos tags
-        assert pos_tags == ['PRP', 'VBP', 'DT', 'NN', '.']
+        tokens = pos_tag(self.tokens)
+        tags = ['PRP', 'VBP', 'DT', 'NN', '.']
+        assert tags == pos_tags(tokens)
+
+    def test_get_sent_choice(self):
+        list_ = [(1, "apple"), (2, "banana"), (3, "carrot")]
+        assert get_sent_choice(2, list_) == "banana"
+        assert get_sent_choice(3, list_) == "carrot"

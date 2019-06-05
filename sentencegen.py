@@ -19,7 +19,13 @@ from constants import (CHOICE_MESSAGE,
                        WELCOME_MESSAGE,)
 
 
+def get_sent_choice(choice: int, sentences: List[Text]) -> Text:
+    """Gets the chosen sentence. Returns String."""
+    return sentences[choice - 1][1]
+
+
 def load_files(file_: Text) -> List[Text]:
+    """Loads a text file. Returns List."""
     try:
         temp = []
         with open(file_, "r") as f:
@@ -28,6 +34,11 @@ def load_files(file_: Text) -> List[Text]:
         return temp
     except FileNotFoundError:
         return []
+
+
+def pos_tags(tokens: List[Tuple[Text, Text]]) -> List[Text]:
+    """Get the pos tags of 'tokens'. Returns List."""
+    return [tag[1] for tag in tokens]
 
 
 def main(vocab: List[Tuple[Text, Text]], sents: List[Text]) -> None:
@@ -45,7 +56,19 @@ def main(vocab: List[Tuple[Text, Text]], sents: List[Text]) -> None:
         except ValueError:
             print(NOT_A_NUMBER_ERROR)
    
-   # tokenize/parse the sentence
+    # get sentence choice
+    sentence_choice = get_sent_choice(choice, sents) # doesnt work on 30
+
+    # tokenize
+    tokens = word_tokenize(sentence_choice)
+    print(tokens)
+
+
+
+
+
+
+   # get tags and make list of tagged words to choose from
    # determine the parts of speech
     # make list of the needed parts of speech
 
