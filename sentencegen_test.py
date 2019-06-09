@@ -54,3 +54,9 @@ class TestMainFunctions():
             choices = self.tokens.copy()
             word = choices[0]
             assert change_word(word, choices) != word
+
+    def test_word_combos(self):
+        combos = word_combos(self.tagged)
+        assert isinstance(combos, list)
+        assert isinstance(combos[0], list)
+

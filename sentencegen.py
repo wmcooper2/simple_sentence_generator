@@ -16,6 +16,7 @@ from nltk.tag import pos_tag
 from constants import (CHOICE_MESSAGE,
                        NOT_A_NUMBER_ERROR,
                        SENTENCE_FILE,
+                       TAG_LIST,
                        VOCABULARY_FILE,
                        WELCOME_MESSAGE,)
 
@@ -43,7 +44,12 @@ def load_file(file_: Text) -> List[Text]:
         return []
 
 
-
+def word_combos(tagged: List[Tuple[Text, Text]]) -> List[List[Text]]:
+    """Creates a list of lists of vocab words. Returns List of Lists."""
+#     tags = [word[1] for word in tagged]
+    tags = pos_tags(tagged)
+#     return [load_file(tag) for tag in tags if tag in TAG_LIST else tag[1]]
+    return [load_file(tag) if tag in TAG_LIST else tag for tag in tags]
 
 
 def pos_tags(tokens: List[Tuple[Text, Text]]) -> List[Text]:
@@ -68,13 +74,29 @@ def main(vocab: List[Tuple[Text, Text]], sents: List[Text]) -> None:
     tokens = word_tokenize(sentence_choice)
     tagged = pos_tag(tokens)
 
-# load vocabulary
-    # make list of the parts of speech of the vocabulary
-# make random sentences by only using the given sentence pattern and vocab
+    pprint(word_combos(tagged))
 
-    # When User makes a choice, program asks for an amount.
-        # if the user makes a mistake, then the options are presented again
-    # Program makes a text file with the amount of sentences requested.
+    # load all the words from the pos_tag files as a list of lists
+    #       The total amount of words is low so this is okay for now.
+
+
+
+
+# for each pos tag in the sent
+#   load the appropriate pos tag file
+#   store the returned list as a value in a dict with key=pos_tag
+#   
+# 
+# 
+# 
+# 
+# 
+# 
+
+
+    # load specific vocab for a pos_tag identifier
+
+# make random sentences by only using the given sentence pattern and vocab
 
 if __name__ == "__main__":
     sentences = list(enumerate(load_file(SENTENCE_FILE), start=1))
