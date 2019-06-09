@@ -2,6 +2,7 @@
 # stand lib
 from pathlib import Path
 from pprint import pprint
+import random
 from typing import Text
 from typing import Tuple
 from typing import List
@@ -19,12 +20,18 @@ from constants import (CHOICE_MESSAGE,
                        WELCOME_MESSAGE,)
 
 
+def change_word(word: Text, choices: List[Text]) -> Text:
+    """Choose a word from 'choices' different from 'word'. Returns String."""
+    choices.remove(word)
+    return random.choice(choices)
+
+
 def get_sent_choice(choice: int, sentences: List[Text]) -> Text:
     """Gets the chosen sentence. Returns String."""
     return sentences[choice - 1][1]
 
 
-def load_files(file_: Text) -> List[Text]:
+def load_file(file_: Text) -> List[Text]:
     """Loads a text file. Returns List."""
     try:
         temp = []
@@ -34,6 +41,9 @@ def load_files(file_: Text) -> List[Text]:
         return temp
     except FileNotFoundError:
         return []
+
+
+
 
 
 def pos_tags(tokens: List[Tuple[Text, Text]]) -> List[Text]:
@@ -56,23 +66,7 @@ def main(vocab: List[Tuple[Text, Text]], sents: List[Text]) -> None:
             print(NOT_A_NUMBER_ERROR)
     sentence_choice = get_sent_choice(choice, sents)
     tokens = word_tokenize(sentence_choice)
-
-# temp, make txt file of tokens
-
-
-
-    print(tokens)
-
-
-
-
-
-
-   # get tags and make list of tagged words to choose from
-   # determine the parts of speech
-    # make list of the needed parts of speech
-
-
+    tagged = pos_tag(tokens)
 
 # load vocabulary
     # make list of the parts of speech of the vocabulary
@@ -83,6 +77,6 @@ def main(vocab: List[Tuple[Text, Text]], sents: List[Text]) -> None:
     # Program makes a text file with the amount of sentences requested.
 
 if __name__ == "__main__":
-    sentences = list(enumerate(load_files(SENTENCE_FILE), start=1))
-    vocabulary = load_files(VOCABULARY_FILE)
+    sentences = list(enumerate(load_file(SENTENCE_FILE), start=1))
+    vocabulary = load_file(VOCABULARY_FILE)
     main(vocabulary, sentences)

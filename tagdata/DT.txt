@@ -1,0 +1,5 @@
+all
+another
+each
+either
+neither
