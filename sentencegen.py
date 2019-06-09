@@ -42,25 +42,25 @@ def pos_tags(tokens: List[Tuple[Text, Text]]) -> List[Text]:
 
 
 def main(vocab: List[Tuple[Text, Text]], sents: List[Text]) -> None:
-    # User is presented with a list of sentence choices.
+
+    # Display sentences
     answer = input(WELCOME_MESSAGE)
     print(tabulate(sents))
 
     # User chooses one with a number
     choice = -1
-    while choice not in range(1, len(sentences)):
+    while choice not in range(1, len(sentences) + 1):
         try:
             choice = int(input(CHOICE_MESSAGE))
-           # get sentence of user choice
-
         except ValueError:
             print(NOT_A_NUMBER_ERROR)
-   
-    # get sentence choice
-    sentence_choice = get_sent_choice(choice, sents) # doesnt work on 30
-
-    # tokenize
+    sentence_choice = get_sent_choice(choice, sents)
     tokens = word_tokenize(sentence_choice)
+
+# temp, make txt file of tokens
+
+
+
     print(tokens)
 
 
