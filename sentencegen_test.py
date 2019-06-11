@@ -24,6 +24,7 @@ class TestFiles():
 
 class TestNltkMethods():
     sentence = "I am a coconut."
+    sentence2 = "No, I'm not."
     tokens = word_tokenize(sentence)
     
     def test_nltk_word_tokenize(self):
@@ -38,11 +39,11 @@ class TestMainFunctions():
     sentence = "I am a coconut."
     tokens = word_tokenize(sentence)
     tagged = pos_tag(tokens)
+    tags = ['PRP', 'VBP', 'DT', 'NN', '.']
 
     def test_sent_pos_tags(self):
         tokens = pos_tag(self.tokens)
-        tags = ['PRP', 'VBP', 'DT', 'NN', '.']
-        assert tags == pos_tags(tokens)
+        assert self.tags == pos_tags(tokens)
 
     def test_get_sent_choice(self):
         list_ = [(1, "apple"), (2, "banana"), (3, "carrot")]
@@ -55,8 +56,46 @@ class TestMainFunctions():
             word = choices[0]
             assert change_word(word, choices) != word
 
-    def test_word_combos(self):
-        combos = word_combos(self.tagged)
+    def test_pos_tag_word_list(self):
+        combos = pos_tag_word_list(self.tagged)
         assert isinstance(combos, list)
         assert isinstance(combos[0], list)
 
+    def test_load_tag_file(self):
+        for tag in self.tagged:
+            assert isinstance(load_file("tagdata/" + tag[1] + ".txt"), list)
+#         assert len(load_file("tagdata/" + tag[1] + ".txt")) > 0
+
+#     def test_
+
+    def test_remove_simple_punctuation_tags(self):
+        tags = ['PRP', 'VBP', 'DT', 'NN']
+        assert tags == remove_simple_punctuation_tags(self.tags)
+
+    def test_remove_word_tags(self):
+        tags = ['.']
+        assert tags == remove_word_tags(self.tags)
+
+#     def test_convert_elements_to_lists(self):
+#         assert
+
+    def test_all_elements_are_list_type(self):
+        some_not_lists = [["I", "am"], "a", ["coconut"], "."]
+        normal = [["I"], ["am"], ["a"], ["coconut"], ["."]]
+        assert all_elements_are_list_type([])
+        assert all_elements_are_list_type(some_not_lists) == False
+        assert all_elements_are_list_type(normal)
+
+    def test_is_list_type(self):
+        assert is_list_type([])
+        assert is_list_type(["I"])
+        assert is_list_type("I") == False
+        assert is_list_type([["I"], ["am"], ["a"], ["coconut"], ["."]])
+
+
+
+#     def test_all_possibilities(self):
+#         assert all_possiblities("", list_of_lists, empty_list)
+    
+#     def test_calculate_possibilities(self):
+#         assert calculate_possiblities(

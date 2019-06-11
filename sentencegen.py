@@ -3,6 +3,7 @@
 from pathlib import Path
 from pprint import pprint
 import random
+from typing import Any
 from typing import Text
 from typing import Tuple
 from typing import List
@@ -15,10 +16,29 @@ from nltk.tag import pos_tag
 # custom
 from constants import (CHOICE_MESSAGE,
                        NOT_A_NUMBER_ERROR,
+                       PUNCTUATION,
                        SENTENCE_FILE,
                        TAG_LIST,
                        VOCABULARY_FILE,
                        WELCOME_MESSAGE,)
+
+
+def all_elements_are_list_type(list_: List[List[Text]]) -> bool:
+    """Check that all elements of 'list_' are lists. Returns Boolean."""
+    return all(is_list_type(el) for el in list_)
+
+
+def all_possibilities(string: Text, 
+                      words: List[List[Text]], 
+                      all_: List[Text]) -> List[Text]:
+    """Recursively get all combinations of 'words' lists without
+       changing the order of the lists. Returns List."""
+    for word in words[0]:
+        sent_so_far = " ".join([string, word])
+        try:
+            recfun(sent_so_far, words[1:])
+        except IndexError:
+            all_.append(sent_so_far.strip())
 
 
 def change_word(word: Text, choices: List[Text]) -> Text:
@@ -32,8 +52,13 @@ def get_sent_choice(choice: int, sentences: List[Text]) -> Text:
     return sentences[choice - 1][1]
 
 
+def is_list_type(arg: Any) -> bool:
+    """Checks if 'arg' is of list type. Returns Boolean."""
+    return isinstance(arg, list)
+
+
 def load_file(file_: Text) -> List[Text]:
-    """Loads a text file. Returns List."""
+    """Loads a 'file. Returns List."""
     try:
         temp = []
         with open(file_, "r") as f:
@@ -44,12 +69,10 @@ def load_file(file_: Text) -> List[Text]:
         return []
 
 
-def word_combos(tagged: List[Tuple[Text, Text]]) -> List[List[Text]]:
+def pos_tag_word_list(tagged: List[Tuple[Text, Text]]) -> List[List[Text]]:
     """Creates a list of lists of vocab words. Returns List of Lists."""
-#     tags = [word[1] for word in tagged]
     tags = pos_tags(tagged)
-#     return [load_file(tag) for tag in tags if tag in TAG_LIST else tag[1]]
-    return [load_file(tag) if tag in TAG_LIST else tag for tag in tags]
+    return [load_file("tagdata/" + tag + ".txt") if tag in TAG_LIST else tag for tag in tags]
 
 
 def pos_tags(tokens: List[Tuple[Text, Text]]) -> List[Text]:
@@ -73,30 +96,35 @@ def main(vocab: List[Tuple[Text, Text]], sents: List[Text]) -> None:
     sentence_choice = get_sent_choice(choice, sents)
     tokens = word_tokenize(sentence_choice)
     tagged = pos_tag(tokens)
+    
+    #TESTING
+#     pprint(tagged)
+    pprint(pos_tag_word_list(tagged))
+#     pprint(remove_simple_punctuation_tags(pos_tag_word_list(tagged)))
+#     temp = remove_simple_punctuation_tags(pos_tag_word_list(tagged))
+#     pprint(remove_word_tags(temp))
 
-    pprint(word_combos(tagged))
-
-    # load all the words from the pos_tag files as a list of lists
-    #       The total amount of words is low so this is okay for now.
-
-
-
-
-# for each pos tag in the sent
-#   load the appropriate pos tag file
-#   store the returned list as a value in a dict with key=pos_tag
-#   
-# 
-# 
-# 
-# 
-# 
-# 
+    # TODO:
+        # confirm that all elements are list elements (for uniformity)
+        # load specific vocab for a pos_tag identifier
+        # calculate how many sentences possible
+        # save all the sentence possibilities to a text file
+        # 
 
 
-    # load specific vocab for a pos_tag identifier
 
-# make random sentences by only using the given sentence pattern and vocab
+
+
+
+
+def remove_simple_punctuation_tags(list_: List[Text]) -> List[Text]:
+    """Removes the punctuation tags from 'list_'. Returns List"""
+    return [item for item in list_ if item not in PUNCTUATION]
+
+def remove_word_tags(list_: List[Text]) -> List[Text]:
+    """Removes the word tags from 'list_'. Returns List"""
+    return [item for item in list_ if item not in TAG_LIST]
+
 
 if __name__ == "__main__":
     sentences = list(enumerate(load_file(SENTENCE_FILE), start=1))
