@@ -47,6 +47,11 @@ def change_word(word: Text, choices: List[Text]) -> Text:
     return random.choice(choices)
 
 
+def count_choices(list_: List[List[Text]]) -> List[int]:
+    """Counts options for each element in 'list_'. Returns List."""
+    return [len(el) for el in list_]
+
+
 def get_sent_choice(choice: int, sentences: List[Text]) -> Text:
     """Gets the chosen sentence. Returns String."""
     return sentences[choice - 1][1]
@@ -96,10 +101,19 @@ def main(vocab: List[Tuple[Text, Text]], sents: List[Text]) -> None:
     sentence_choice = get_sent_choice(choice, sents)
     tokens = word_tokenize(sentence_choice)
     tagged = pos_tag(tokens)
+    pos_tagged = pos_tag_word_list(tagged)
+
+    #remove tags from list
+    no_tags = remove_word_tags(pos_tagged)
+    #remove empty elements from list
+    pprint(remove_empty_elements(no_tags))
+
+
     
     #TESTING
 #     pprint(tagged)
-    pprint(pos_tag_word_list(tagged))
+#     pprint(pos_tag_word_list(tagged))
+#     pprint(no_tags)
 #     pprint(remove_simple_punctuation_tags(pos_tag_word_list(tagged)))
 #     temp = remove_simple_punctuation_tags(pos_tag_word_list(tagged))
 #     pprint(remove_word_tags(temp))
@@ -115,11 +129,15 @@ def main(vocab: List[Tuple[Text, Text]], sents: List[Text]) -> None:
 
 
 
+def remove_empty_elements(list_: List[List[Text]]) -> List[List[Text]]:
+    """Remove the empty elements. Returns List."""
+    return [item for item in list_ if len(item) != 0]
 
 
 def remove_simple_punctuation_tags(list_: List[Text]) -> List[Text]:
     """Removes the punctuation tags from 'list_'. Returns List"""
     return [item for item in list_ if item not in PUNCTUATION]
+
 
 def remove_word_tags(list_: List[Text]) -> List[Text]:
     """Removes the word tags from 'list_'. Returns List"""

@@ -92,6 +92,16 @@ class TestMainFunctions():
         assert is_list_type("I") == False
         assert is_list_type([["I"], ["am"], ["a"], ["coconut"], ["."]])
 
+    def test_count_choices(self):
+        assert count_choices([]) == []
+        assert count_choices([self.tags]) == [5]
+        assert count_choices([["I", "am"], ["a", "coconut"]]) == [2,2]
+
+    def test_remove_empty_elements(self):
+        assert remove_empty_elements([]) == []
+        assert remove_empty_elements(["I"]) == ["I"]
+        assert remove_empty_elements([["I"], [], ["am"]]) == [["I"], ["am"]]
+
 
 
 #     def test_all_possibilities(self):
