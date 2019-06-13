@@ -1,5 +1,7 @@
 """sentencegen.py; generate sentences based on given sentence structure and a given vocabulary."""
 # stand lib
+from functools import reduce
+import operator
 from pathlib import Path
 from pprint import pprint
 import random
@@ -28,17 +30,25 @@ def all_elements_are_list_type(list_: List[List[Text]]) -> bool:
     return all(is_list_type(el) for el in list_)
 
 
-def all_possibilities(string: Text, 
-                      words: List[List[Text]], 
-                      all_: List[Text]) -> List[Text]:
+sentences = []
+def all_possibilities(incomplete: Text,
+                      words: List[List[Text]]) -> List[Text]:
     """Recursively get all combinations of 'words' lists without
-       changing the order of the lists. Returns List."""
+       changing the order of the list elements. Returns List.
+    """
     for word in words[0]:
-        sent_so_far = " ".join([string, word])
+        sent_so_far = " ".join([incomplete, word])
         try:
-            recfun(sent_so_far, words[1:])
+            all_possibilities(sent_so_far, words[1:])
         except IndexError:
-            all_.append(sent_so_far.strip())
+            sentences.append(sent_so_far.strip())
+    return sentences
+
+
+def calculate_possibilities(choices: List[List[Text]]) -> int:
+    """Calculates the possible sentences from 'choices'. Returns Integer."""
+    possibilities = [len(el) for el in choices]
+    return reduce(operator.mul, possibilities)
 
 
 def change_word(word: Text, choices: List[Text]) -> Text:
@@ -90,8 +100,7 @@ def main(vocab: List[Tuple[Text, Text]], sents: List[Text]) -> None:
     # Display sentences
     answer = input(WELCOME_MESSAGE)
     print(tabulate(sents))
-
-    # User chooses one with a number
+# User chooses one with a number
     choice = -1
     while choice not in range(1, len(sentences) + 1):
         try:
@@ -104,26 +113,20 @@ def main(vocab: List[Tuple[Text, Text]], sents: List[Text]) -> None:
     pos_tagged = pos_tag_word_list(tagged)
 
     #remove tags from list
-    no_tags = remove_word_tags(pos_tagged)
+    no_tags = remove_tags(pos_tagged)
     #remove empty elements from list
-    pprint(remove_empty_elements(no_tags))
+    cleaned_list = remove_empty_elements(no_tags)
+    #show total sentence possibilities
+    print(calculate_possibilities(cleaned_list))
+    #show possible sentences. Could be in the billions.
+#     print(calculate_possibilities(cleaned_list))
 
-
-    
-    #TESTING
-#     pprint(tagged)
-#     pprint(pos_tag_word_list(tagged))
-#     pprint(no_tags)
-#     pprint(remove_simple_punctuation_tags(pos_tag_word_list(tagged)))
-#     temp = remove_simple_punctuation_tags(pos_tag_word_list(tagged))
-#     pprint(remove_word_tags(temp))
+#everything is working before this line
 
     # TODO:
-        # confirm that all elements are list elements (for uniformity)
-        # load specific vocab for a pos_tag identifier
-        # calculate how many sentences possible
+        # filter the sentences based on grammar rules
+        # filter the sentences based on semantic rules
         # save all the sentence possibilities to a text file
-        # 
 
 
 
@@ -139,9 +142,10 @@ def remove_simple_punctuation_tags(list_: List[Text]) -> List[Text]:
     return [item for item in list_ if item not in PUNCTUATION]
 
 
-def remove_word_tags(list_: List[Text]) -> List[Text]:
+def remove_tags(list_: List[Text]) -> List[Text]:
     """Removes the word tags from 'list_'. Returns List"""
-    return [item for item in list_ if item not in TAG_LIST]
+    return [item for item in list_ \
+            if item not in TAG_LIST and item not in PUNCTUATION]
 
 
 if __name__ == "__main__":

@@ -37,9 +37,12 @@ class TestNltkMethods():
 
 class TestMainFunctions():
     sentence = "I am a coconut."
+    tags = ['PRP', 'VBP', 'DT', 'NN', '.']
     tokens = word_tokenize(sentence)
     tagged = pos_tag(tokens)
-    tags = ['PRP', 'VBP', 'DT', 'NN', '.']
+    pos_tagged = pos_tag_word_list(tagged)
+    no_tags = remove_tags(pos_tagged)
+    only_word_choices = remove_empty_elements(no_tags)
 
     def test_sent_pos_tags(self):
         tokens = pos_tag(self.tokens)
@@ -72,12 +75,13 @@ class TestMainFunctions():
         tags = ['PRP', 'VBP', 'DT', 'NN']
         assert tags == remove_simple_punctuation_tags(self.tags)
 
-    def test_remove_word_tags(self):
-        tags = ['.']
-        assert tags == remove_word_tags(self.tags)
-
-#     def test_convert_elements_to_lists(self):
-#         assert
+    def test_remove_tags(self):
+        one_tag = ['.']
+        assert remove_tags([]) == []
+        assert remove_tags(one_tag) == []
+        assert remove_tags(self.tags) == []
+        assert remove_tags([["I", "am"], "a", ["coconut"], "."]) == \
+                [["I", "am"], "a", ["coconut"]]
 
     def test_all_elements_are_list_type(self):
         some_not_lists = [["I", "am"], "a", ["coconut"], "."]
@@ -101,11 +105,8 @@ class TestMainFunctions():
         assert remove_empty_elements([]) == []
         assert remove_empty_elements(["I"]) == ["I"]
         assert remove_empty_elements([["I"], [], ["am"]]) == [["I"], ["am"]]
-
-
-
-#     def test_all_possibilities(self):
-#         assert all_possiblities("", list_of_lists, empty_list)
     
-#     def test_calculate_possibilities(self):
-#         assert calculate_possiblities(
+    def test_calculate_possibilities(self):
+        total = calculate_possibilities(self.only_word_choices)
+        assert isinstance(total, int)
+
