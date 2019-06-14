@@ -14,6 +14,7 @@ from typing import List
 from tabulate import tabulate
 from nltk.tokenize import word_tokenize
 from nltk.tag import pos_tag
+from nltk.util import bigrams
 
 # custom
 from constants import (CHOICE_MESSAGE,
@@ -21,6 +22,7 @@ from constants import (CHOICE_MESSAGE,
                        PUNCTUATION,
                        SENTENCE_FILE,
                        TAG_LIST,
+                       VALID_BIGRAMS,
                        VOCABULARY_FILE,
                        WELCOME_MESSAGE,)
 
@@ -67,6 +69,13 @@ def get_sent_choice(choice: int, sentences: List[Text]) -> Text:
     return sentences[choice - 1][1]
 
 
+def tag_bigrams(sentence: Text) -> List[Tuple[Text, Text]]:
+    """Creates bigrams of pos_tags. Returns List of Tuples."""
+    tagged = pos_tag(word_tokenize(sentence))
+    tags = [tag[1] for tag in tagged]
+    return list(bigrams(tags))
+
+
 def is_list_type(arg: Any) -> bool:
     """Checks if 'arg' is of list type. Returns Boolean."""
     return isinstance(arg, list)
@@ -82,6 +91,14 @@ def load_file(file_: Text) -> List[Text]:
         return temp
     except FileNotFoundError:
         return []
+
+
+# duplicate of pos_tags()?
+def only_tags(sent: Text) -> List[Text]:
+    """Gets only the tags of 'sent'. Returns List."""
+    tokens = word_tokenize(sent)
+    tags = pos_tag(tokens)
+    return [tag[1] for tag in tags]
 
 
 def pos_tag_word_list(tagged: List[Tuple[Text, Text]]) -> List[List[Text]]:
@@ -107,21 +124,29 @@ def main(vocab: List[Tuple[Text, Text]], sents: List[Text]) -> None:
             choice = int(input(CHOICE_MESSAGE))
         except ValueError:
             print(NOT_A_NUMBER_ERROR)
+    # get user choice
     sentence_choice = get_sent_choice(choice, sents)
+    # tokenize
     tokens = word_tokenize(sentence_choice)
+    # tag with part of speech
     tagged = pos_tag(tokens)
+    # get pos words
     pos_tagged = pos_tag_word_list(tagged)
-
-    #remove tags from list
+    # remove tags from list
     no_tags = remove_tags(pos_tagged)
-    #remove empty elements from list
+    # remove empty elements from list
     cleaned_list = remove_empty_elements(no_tags)
-    #show total sentence possibilities
-    print(calculate_possibilities(cleaned_list))
-    #show possible sentences. Could be in the billions.
+    # show total sentence possibilities
+    print("Possible sentences:", calculate_possibilities(cleaned_list))
+    # show possible sentences. Could be in the billions.
 #     print(calculate_possibilities(cleaned_list))
+    # get only pos_tags
+    print("Only tags:", only_tags(sentence_choice))
+    # show bigrams
+    print("Bigrams:", tag_bigrams(sentence_choice))
 
-#everything is working before this line
+
+# everything is working before this line
 
     # TODO:
         # filter the sentences based on grammar rules
@@ -147,6 +172,10 @@ def remove_tags(list_: List[Text]) -> List[Text]:
     return [item for item in list_ \
             if item not in TAG_LIST and item not in PUNCTUATION]
 
+
+def valid_bigram_pair(pair: Tuple[Text, Text]) -> bool:
+    """Checks if 'pair' is valid. Returns Boolean."""
+    return pair in VALID_BIGRAMS
 
 if __name__ == "__main__":
     sentences = list(enumerate(load_file(SENTENCE_FILE), start=1))

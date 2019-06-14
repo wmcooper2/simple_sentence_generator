@@ -4,6 +4,7 @@ from pathlib import Path
 from sentencegen import *
 from nltk.tokenize import word_tokenize
 from nltk.tag import pos_tag
+from nltk.util import bigrams
 
 
 class TestFiles():
@@ -47,6 +48,9 @@ class TestMainFunctions():
     def test_sent_pos_tags(self):
         tokens = pos_tag(self.tokens)
         assert self.tags == pos_tags(tokens)
+
+    def test_only_tags(self):
+        assert only_tags(self.sentence) == ['PRP', 'VBP', 'DT', 'NN', '.']
 
     def test_get_sent_choice(self):
         list_ = [(1, "apple"), (2, "banana"), (3, "carrot")]
@@ -110,3 +114,15 @@ class TestMainFunctions():
         total = calculate_possibilities(self.only_word_choices)
         assert isinstance(total, int)
 
+    def test_tag_bigrams(self):
+        assert tag_bigrams(self.sentence) == \
+               [('PRP', 'VBP'), ('VBP', 'DT'), ('DT', 'NN'), ('NN', '.')]
+
+    def test_valid_bigram_pair(self):
+        assert valid_bigram_pair([]) == False
+        assert valid_bigram_pair(('PRP', 'VBP'))
+        assert valid_bigram_pair(('VBP', 'DT'))
+        assert valid_bigram_pair(('DT', 'NN'))
+        assert valid_bigram_pair(('NN', '.'))
+
+    
