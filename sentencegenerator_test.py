@@ -1,11 +1,16 @@
 """sentencegen.py test module"""
+# stand lib
 from itertools import permutations
 from pathlib import Path
-from sentencegen import *
+
+# 3rd party
 from nltk.tokenize import word_tokenize
 from nltk.tag import pos_tag
 from nltk.util import bigrams
 
+# custom
+from constants import *
+from sentencegenerator import *
 
 class TestFiles():
     sentence_file = "grade2sentences.txt"
@@ -125,4 +130,6 @@ class TestMainFunctions():
         assert valid_bigram_pair(('DT', 'NN'))
         assert valid_bigram_pair(('NN', '.'))
 
-    
+    def test_syntactically_correct(self):
+#         valid_bigrams = tag_bigrams(self.sentence)
+        assert syntactically_correct(self.sentence, VALID_BIGRAMS) 

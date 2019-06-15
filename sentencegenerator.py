@@ -32,19 +32,22 @@ def all_elements_are_list_type(list_: List[List[Text]]) -> bool:
     return all(is_list_type(el) for el in list_)
 
 
-sentences = []
+sentence_combos = []
 def all_possibilities(incomplete: Text,
                       words: List[List[Text]]) -> List[Text]:
     """Recursively get all combinations of 'words' lists without
        changing the order of the list elements. Returns List.
+
+        -pass in a blank string ("") for the incomplete arg.
+
     """
     for word in words[0]:
         sent_so_far = " ".join([incomplete, word])
         try:
             all_possibilities(sent_so_far, words[1:])
         except IndexError:
-            sentences.append(sent_so_far.strip())
-    return sentences
+            sentence_combos.append(sent_so_far.strip())
+    return sentence_combos
 
 
 def calculate_possibilities(choices: List[List[Text]]) -> int:
@@ -126,6 +129,8 @@ def main(vocab: List[Tuple[Text, Text]], sents: List[Text]) -> None:
             print(NOT_A_NUMBER_ERROR)
     # get user choice
     sentence_choice = get_sent_choice(choice, sents)
+    # bigrams of original sentence.
+    print("Orignal sent bigrams:", tag_bigrams(sentence_choice))
     # tokenize
     tokens = word_tokenize(sentence_choice)
     # tag with part of speech
@@ -141,10 +146,32 @@ def main(vocab: List[Tuple[Text, Text]], sents: List[Text]) -> None:
     # show possible sentences. Could be in the billions.
 #     print(calculate_possibilities(cleaned_list))
     # get only pos_tags
-    print("Only tags:", only_tags(sentence_choice))
+#     print("Only tags:", only_tags(sentence_choice))
     # show bigrams
-    print("Bigrams:", tag_bigrams(sentence_choice))
+#     print("Bigrams:", tag_bigrams(sentence_choice))
 
+#    prompt user to choose to go on, in case too many sentences.
+
+    # make list of possible sentences
+    possible = all_possibilities("", cleaned_list)
+    good_sents = []
+    bad_sents = []
+    for sent in possible[:100]:
+        print(sent, tag_bigrams(sent))
+        if syntactically_correct(sent, VALID_BIGRAMS):
+            good_sent.append(sent)
+        else:
+            bad_sents.append(sent)
+
+#     pprint(good_sents)
+#     pprint(bad_sents)
+    print("Good:", len(good_sents))
+    print("Bad:", len(bad_sents))
+
+#     pprint(possible[:30])
+
+# TESTING
+#     print(cleaned_list)
 
 # everything is working before this line
 
@@ -173,9 +200,18 @@ def remove_tags(list_: List[Text]) -> List[Text]:
             if item not in TAG_LIST and item not in PUNCTUATION]
 
 
+def syntactically_correct(sentence: Text, valid_bigrams: 
+                          List[Tuple[Text, Text]]) -> bool:
+    """Determines 'sentence' has correct grammatical structure. 
+       Returns Boolean."""
+    pairs = tag_bigrams(sentence)
+    return all([pair in valid_bigrams for pair in pairs])
+
+
 def valid_bigram_pair(pair: Tuple[Text, Text]) -> bool:
     """Checks if 'pair' is valid. Returns Boolean."""
     return pair in VALID_BIGRAMS
+
 
 if __name__ == "__main__":
     sentences = list(enumerate(load_file(SENTENCE_FILE), start=1))
