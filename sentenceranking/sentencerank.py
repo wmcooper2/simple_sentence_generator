@@ -77,7 +77,7 @@ def main(dirs: List[Text]) -> None:
     hard = difficulty_levels(rankings, HARD, 1000)
 
     # need 40 groups for 40 cards
-    save_to = "rankings.txt"
+    save_to = "rankings6.txt"
     with open(save_to, "w+") as f:
         for x in range(40):
             group = [
