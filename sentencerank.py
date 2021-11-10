@@ -67,8 +67,9 @@ def rank_sentences(all_sents:List[Text]) -> List[Tuple[int, Text]]:
     return sorted([(difficulty_rank(sent), sent) for sent in all_sents])
 
 
-def main(dirs: List[Text]) -> None:
-    temp = load_files(dirs)
+def main() -> None:
+    temp = load_files()
+    #TODO, temp is a list of strings representing the sentences
     rankings = rank_sentences(temp)
 
     EASY, MEDIUM, HARD = 8, 14, 19
@@ -92,4 +93,4 @@ def main(dirs: List[Text]) -> None:
 
 
 if __name__ == "__main__":
-    main(DIRS)
+    main()
